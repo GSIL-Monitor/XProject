@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinguang.xusercenter.mapper.UserMapper">
+
+	<!-- 新增用户 -->
+	<insert id="addUser" parameterType="User">
+		INSERT INTO t_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">id,</if>
+			<if test="username != null">username,</if>
+			<if test="password != null">password,</if>
+			<if test="name != null">name,</if>
+			<if test="phone != null">phone,</if>
+			<if test="email != null">email,</if>
+			<if test="state != null">state,</if>
+			<if test="createTime != null">create_time,</if>
+		</trim>
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="username != null">#{username},</if>
+			<if test="password != null">#{password},</if>
+			<if test="name != null">#{name},</if>
+			<if test="phone != null">#{phone},</if>
+			<if test="email != null">#{email},</if>
+			<if test="state != null">#{state},</if>
+			<if test="createTime != null">#{createTime},</if>
+		</trim>
+	</insert>
+
+	<!-- 通过 ID 获取用户 -->
+	<select id="getUserById" resultType="User">
+		SELECT
+			tu.id AS id,
+			tu.username AS username,
+			tu.password AS password,
+			tu.name AS name,
+			tu.phone AS phone,
+			tu.email AS email,
+			tu.state AS state,
+			tu.create_time AS createTime,
+			tu.update_time AS updateTime
+		FROM
+			t_user tu
+		WHERE
+			tu.id=#{0}
+	</select>
+
+	<!-- 通过 username 获取用户 -->
+	<select id="getUserByUsername" resultType="User">
+		SELECT
+			tu.id AS id,
+			tu.username AS username,
+			tu.password AS password,
+			tu.name AS name,
+			tu.phone AS phone,
+			tu.email AS email,
+			tu.state AS state,
+			tu.create_time AS createTime,
+			tu.update_time AS updateTime
+		FROM
+			t_user tu
+		WHERE
+			tu.username=#{0}
+	</select>
+
+	<!-- 通过 username 和 password 获取用户 -->
+	<select id="getUserByUsernameAndPassword" resultType="User">
+		SELECT
+			tu.id AS id,
+			tu.username AS username,
+			tu.password AS password,
+			tu.phone AS phone,
+			tu.email AS email,
+			tu.state AS state,
+			tu.create_time AS createTime,
+			tu.update_time AS updateTime
+		FROM
+			t_user tu
+		WHERE
+			tu.username=#{0}
+			AND tu.password=#{1}
+	</select>
+
+	<!-- 修改用户 -->
+	<update id="updateUser" parameterType="User">
+		UPDATE t_user tu
+		<set>
+			<if test="password != null and password != ''">
+				tu.password=#{password},
+			</if>
+			tu.name=#{name}, tu.phone=#{phone}, tu.email=#{email},
+			<if test="updateTime != null">
+				tu.update_time=#{updateTime},
+			</if>
+		</set>
+		WHERE
+			tu.id=#{id}
+	</update>
+
+</mapper>

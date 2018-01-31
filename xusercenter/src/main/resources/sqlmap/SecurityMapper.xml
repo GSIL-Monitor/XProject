@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinguang.xusercenter.mapper.SecurityMapper">
+
+    <!-- 新增安全 -->
+    <insert id="addSecurity" parameterType="Security">
+        INSERT INTO t_security
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 通过 ID 获取安全 -->
+    <select id="getSecurityById" resultType="Security">
+        SELECT
+            ts.id AS id,
+            ts.phone AS phone,
+            ts.email AS email,
+            ts.questionone_id AS questiononeId,
+            ts.answerone AS answerone,
+            ts.questionone_prompt AS questiononePrompt,
+            ts.questiontwo_id AS questiontwoId,
+            ts.answertwo AS answertwo,
+            ts.questiontwo_prompt AS questiontwoPrompt,
+            ts.create_time AS createTime,
+            ts.update_time AS updateTime
+        FROM
+            t_security ts
+        WHERE
+            ts.id=#{0}
+    </select>
+
+</mapper>

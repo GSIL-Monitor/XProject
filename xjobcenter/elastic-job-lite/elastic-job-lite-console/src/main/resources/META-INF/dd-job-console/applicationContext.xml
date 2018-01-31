@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd 
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context.xsd 
+                        ">
+    <context:component-scan base-package="com.dangdang.ddframe.job.lite.console">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+    
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dbcp.properties</value>
+				<value>classpath:cas.properties</value>
+			</list>
+		</property>
+	</bean>
+    
+    <bean class="com.xinguang.casclient.config.CasConfig">
+		<property name="locations" value="classpath:cas.properties" />
+	</bean>
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="${serverPrefixUrl}/tologin?service=${clientPrefixUrl}/callback" />
+		<property name="successUrl" value="/main" />
+		<property name="unauthorizedUrl" value="/unauthorized" />
+		<property name="filters">
+			<map>
+				<entry key="logout" value-ref="logoutFilter" />
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/callback = anon
+				/error = anon
+				/logout = logout
+				/** = authc
+			</value>
+		</property>
+	</bean>
+
+	<bean id="logoutFilter" class="com.xinguang.casclient.filter.CasLogoutFilter">
+		<property name="redirectUrl" value="${serverPrefixUrl}/logout?service=${clientPrefixUrl}" />
+	</bean>
+
+	<!-- 自定义 Realm -->
+	<bean id="casRealm" class="com.xinguang.casclient.realm.CasRealm"></bean>
+	
+	<!-- 用户授权信息 Cache -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">  
+		<property name="realm" ref="casRealm"></property>
+		<property name="cacheManager" ref="cacheManager"></property>
+    </bean>
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="defaultAutoCommit" value="${defaultAutoCommit}" />
+		<property name="initialSize" value="${initialSize}" />
+		<property name="maxTotal" value="${maxTotal}" />
+		<property name="maxIdle" value="${maxIdle}" />
+		<property name="minIdle" value="${minIdle}" />
+		<property name="maxWaitMillis" value="${maxWaitMillis}" />
+	</bean>
+
+	<!-- 配置 sqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath*:sqlmap/*Mapper.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- Mapper 接口所在包名, Spring 会自动查找其下的 Mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.dangdang.ddframe.job.lite.console.mapper" />
+	</bean>
+    
+</beans>

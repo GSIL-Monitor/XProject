@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="false" />
+		<setting name="callSettersOnNulls" value="true" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias alias="UserId" type="com.xinguang.xusercenter.entity.UserId" /> <!-- 用户ID -->
+		<typeAlias alias="Log" type="com.xinguang.xusercenter.entity.Log" /> <!-- 日志 -->
+		<typeAlias alias="Question" type="com.xinguang.xusercenter.entity.Question" /> <!-- 问题 -->
+		<typeAlias alias="Security" type="com.xinguang.xusercenter.entity.Security" /> <!-- 安全 -->
+	</typeAliases>
+
+</configuration>

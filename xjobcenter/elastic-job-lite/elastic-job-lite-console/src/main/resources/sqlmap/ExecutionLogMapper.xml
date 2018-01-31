@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdang.ddframe.job.lite.console.mapper.ExecutionLogMapper">
+
+	<!-- 获取总记录数 -->
+	<select id="getTotalRecord" parameterType="Map" resultType="Integer">
+		SELECT
+			count(*)
+		FROM
+			JOB_EXECUTION_LOG jl
+		WHERE
+			jl.job_name = #{jobName}
+			<if test="isSuccess != null and isSuccess != ''">
+				AND is_success=#{isSuccess}
+			</if>
+	</select>
+
+	<!-- 获取执行日志列表 -->
+	<select id="getList" parameterType="Map" resultType="Map">
+		SELECT
+			jl.task_id AS taskId,
+			jl.ip AS ip,
+			jl.sharding_item AS shardingItem,
+			jl.execution_source AS executionSource,
+			jl.failure_cause AS failureCause,
+			jl.is_success AS isSuccess,
+			DATE_FORMAT(jl.start_time, '%Y-%m-%d %H:%i:%S') AS startTime,
+			DATE_FORMAT(jl.complete_time, '%Y-%m-%d %H:%i:%S') AS completeTime
+		FROM
+			JOB_EXECUTION_LOG jl
+		WHERE
+			jl.job_name = #{jobName}
+			<if test="isSuccess != null and isSuccess != ''">
+				AND is_success=#{isSuccess}
+			</if>
+		ORDER BY
+			jl.start_time DESC
+		LIMIT
+			${start}, ${size}
+	</select>
+
+</mapper>

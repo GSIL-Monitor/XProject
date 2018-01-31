@@ -1,0 +1,53 @@
+body {
+
+}
+
+.top {
+  margin-top: 80px;
+}
+
+.desc {
+  margin: 20px 0 20px 0;
+}
+
+.form-body {
+  padding: 30px 100px 20px 100px;
+  border: 1px solid #ddd;
+}
+
+.form-body label {
+  margin: 0 10px 0 5px;
+}
+
+input.btn {
+  margin-bottom: 10px;
+  height: 50px;
+  background: #4aaf51;
+  font-weight: 300;
+  font-size: 16px;
+  color: #fff;
+}
+
+input.btn:hover {
+  opacity: 0.6;
+  color: #fff;
+}
+
+input.btn:focus {
+  opacity: 0.6;
+  color: #fff;
+}
+
+input[type="text"], input[type="password"] {
+  margin-top: 6px;
+  height: 40px;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+  border-color: #ccc;
+  box-shadow: none;
+}

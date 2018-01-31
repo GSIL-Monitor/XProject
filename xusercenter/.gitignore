@@ -1,0 +1,6 @@
+.*
+*.iml
+/src/test
+/target
+/logs
+!.gitignore

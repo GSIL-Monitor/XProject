@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd"
+	default-lazy-init="false">
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/tologin" />
+		<property name="successUrl" value="/tomain" />
+		<property name="unauthorizedUrl" value="/unauthorized" />
+		<property name="filters">
+			<map>
+				<entry key="auth" value-ref="authFilter" />
+				<entry key="logout" value-ref="logoutFilter" />
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/static/** = anon
+				/toregist = anon
+				/regist = anon
+				/tologin = auth
+				/getLoginTicket = anon
+				/login = anon
+				/toforgetpassword = anon
+				/getPasswordQuestion = anon
+				/validateAnswer = anon
+				/resetPassword = anon
+				/validate = anon
+				/toerror = anon
+				/logout = logout
+				/** = authc
+			</value>
+		</property>
+	</bean>
+
+	<!-- 自定义过滤器 -->
+	<bean id="authFilter" class="com.xinguang.xusercenter.shiro.filter.AuthFilter"></bean>
+
+	<!-- 登出过滤器 -->
+	<bean id="logoutFilter" class="com.xinguang.xusercenter.shiro.filter.CasLogoutFilter">
+		<property name="redirectUrl" value="tologin" />
+	</bean>
+
+	<!-- 自定义 Realm -->
+	<bean id="authRealm" class="com.xinguang.xusercenter.shiro.realm.AuthRealm"></bean>
+
+	<!-- 用户授权信息 Cache -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="authRealm"></property>
+		<property name="cacheManager" ref="cacheManager"></property>
+	</bean>
+
+	<bean id="contextSource"
+		  class="org.springframework.ldap.core.support.LdapContextSource">
+		<property name="url" value="ldap://172.16.1.166:389" />
+		<property name="base" value="dc=xinguang,dc=com" />
+		<property name="userDn" value="cn=root,dc=xinguang,dc=com" />
+		<property name="password" value="1qaz@WSX" />
+	</bean>
+
+	<!-- 配置 LdapTemplate -->
+	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+		<constructor-arg ref="contextSource" />
+	</bean>
+
+	<!-- 公司 DAO -->
+	<bean id="companyDao" class="com.xinguang.xusercenter.ldap.dao.CompanyDao">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>
+
+	<!-- 用户 DAO -->
+	<bean id="userDao" class="com.xinguang.xusercenter.ldap.dao.UserDao">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>
+
+	<!-- 组 DAO -->
+	<bean id="groupDao" class="com.xinguang.xusercenter.ldap.dao.GroupDao">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>
+
+</beans>

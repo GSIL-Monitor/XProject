@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/rabbit 
+		http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+	<bean id="rabbitProducer" class="com.xinguang.mq.serviceImpl.RabbitProducer">
+		<property name="rmqServerIP" value="#{'${rabbitmq.ip}'?:null}" />
+		<property name="rmqServerPort" value="#{'${rabbitmq.port}'?:0}" />
+		<property name="paramStr" value="#{'${rabbitmq.producer.paramStr}'?:null}" />
+	</bean>
+	
+	<bean id="rabbitConsumer" class="com.xinguang.mq.serviceImpl.RabbitConsumer">
+		<property name="rmqServerIP" value="#{'${rabbitmq.ip}'?:null}" />
+		<property name="rmqServerPort" value="#{'${rabbitmq.port}'?:0}" />
+		<property name="paramStr" value="#{'${rabbitmq.consumer.paramList}'?:null}" />
+	</bean>
+	
+	<bean id="delayProducer" class="com.xinguang.mq.serviceImpl.DelayQueueProducer" >
+		<property name="rmqServerIP" value="#{'${rabbitmq.ip}'?:null}" />
+		<property name="rmqServerPort" value="#{'${rabbitmq.port}'?:0}" />
+		<property name="paramStr" value="#{'${rabbitmq.delayQueue.paramList}'?:null}" />
+	</bean>
+
+	<!-- activemq -->
+	<bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${activemq.brokerURL}" />
+        <property name="userName" value="${activemq.username}"></property>
+        <property name="password" value="${activemq.password}"></property>
+	</bean>
+	
+	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory" ref="targetConnectionFactory" />		
+		<property name="maxConnections" value="#{'${activemq.pool.maxConnections}'?:10}" />
+	</bean>
+	
+	<bean id="activeProducer" class="com.xinguang.mq.serviceImpl.ActiveProducer">
+        <property name="pooledConnectionFactory" ref="pooledConnectionFactory"/>
+        <property name="isopen" value="${activemq.isopen}"></property>
+    </bean>
+    
+	<bean id="activeConsumer" class="com.xinguang.mq.serviceImpl.ActiveConsumer">
+        <property name="pooledConnectionFactory" ref="pooledConnectionFactory"/>
+        <property name="isopen" value="${activemq.isopen}"></property>
+    </bean>
+
+</beans>

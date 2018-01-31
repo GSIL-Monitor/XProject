@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinguang.xusercenter.mapper.UserIdMapper">
+
+    <!-- 获取用户ID -->
+    <select id="get" resultType="UserId">
+        SELECT
+            ui.id,
+            ui.user_id AS userId,
+            ui.company_code AS companyCode
+        FROM
+            t_user_id ui
+        WHERE
+            ui.company_code=#{0}
+    </select>
+
+    <!-- 新增用户ID -->
+    <insert id="add" parameterType="UserId">
+        INSERT INTO t_user_id
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="companyCode != null">company_code,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="companyCode != null">#{companyCode},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改用户ID -->
+    <update id="update" parameterType="UserId">
+        UPDATE t_user_id ui
+        <set>
+            <if test="userId != null and userId != ''">
+                ui.user_id=#{userId},
+            </if>
+            <if test="updateTime != null">
+                ui.update_time=#{updateTime},
+            </if>
+        </set>
+        WHERE
+            ui.id=#{id}
+    </update>
+
+</mapper>

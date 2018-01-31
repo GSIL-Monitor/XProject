@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/decorators">
+    <decorator name="dashboard" page="dashboard.dec">
+        <pattern>/*</pattern>
+    </decorator>
+    <decorator name="error" page="error.dec">
+        <pattern>/error</pattern>
+    </decorator>
+    <decorator name="invalid" page="invalid.dec">
+        <pattern>/invalid</pattern>
+    </decorator>
+</decorators>
